@@ -8,6 +8,12 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CourseDetail from './pages/CourseDetail';
 import Profile from './pages/Profile';
+import Access from './pages/Access';
+import MyLearning from './pages/MyLearning';
+import ThankYou from './pages/ThankYou';
+import ChangePassword from './pages/ChangePassword';
+import MyPlan from './pages/MyPlan';
+import ResetPassword from './pages/ResetPassword';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -26,7 +32,10 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/access" element={<Access />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/thankyou" element={<ThankYou />} />
             
             <Route element={<Layout />}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -54,6 +63,33 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/my-learning"
+                element={
+                  <ProtectedRoute>
+                    <MyLearning />
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/change-password"
+                element={
+                  <ProtectedRoute>
+                    <ChangePassword />
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/my-plan"
+                element={
+                  <ProtectedRoute>
+                    <MyPlan />
                   </ProtectedRoute>
                 }
               />

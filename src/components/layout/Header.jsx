@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Home, User, Key, Gift, Ticket, LogOut, ChevronDown } from 'lucide-react';
+import { Search, Home, User, Key, Gift, Ticket, LogOut, ChevronDown, BookOpen } from 'lucide-react';
 import { Menu, Transition } from '@headlessui/react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -16,8 +16,8 @@ const Header = () => {
 
   const userMenuItems = [
     { icon: User, label: 'My Profile', href: '/profile', color: 'bg-primary-500' },
-    { icon: Key, label: 'Change Password', href: '#', color: 'bg-pink-500' },
-    { icon: Gift, label: 'My Plan', href: '#', color: 'bg-purple-500' },
+    { icon: Key, label: 'Change Password', href: '/change-password', color: 'bg-pink-500' },
+    { icon: Gift, label: 'My Plan', href: '/my-plan', color: 'bg-purple-500' },
     { icon: Ticket, label: 'Invite Code', href: '#', color: 'bg-orange-500' },
     { icon: LogOut, label: 'Logout', onClick: handleLogout, color: 'bg-red-500' },
   ];
@@ -41,6 +41,13 @@ const Header = () => {
             >
               <Home className="w-5 h-5 text-white" />
               <span className="text-white font-medium hidden sm:inline">Home</span>
+            </Link>
+            <Link
+              to="/my-learning"
+              className="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg transition-colors"
+            >
+              <BookOpen className="w-5 h-5 text-white" />
+              <span className="text-white font-medium hidden sm:inline">My Learning</span>
             </Link>
           </div>
 
