@@ -1,0 +1,261 @@
+[
+  {
+    "id": "course_001",
+    "title": "Yoga & Meditation",
+    "description": "Comprehensive yoga and meditation course for holistic hair growth",
+    "thumbnail": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=600&fit=crop",
+    "lessonCount": 29,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_001",
+        "title": "Day 1 - Holistic Approach to Regrow Hair Fast",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "51:30",
+        "completed": false
+      },
+      {
+        "id": "lesson_002",
+        "title": "Day 2 - Holistic Approach to Regrow Hair Fast",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+        "duration": "45:20",
+        "completed": false
+      },
+      {
+        "id": "lesson_003",
+        "title": "Day 3 - Holistic Approach to Regrow Hair Fast",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+        "duration": "38:15",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_002",
+    "title": "Common Myths & Mistakes",
+    "description": "Learn about common hair care myths and mistakes to avoid",
+    "thumbnail": "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=800&h=600&fit=crop",
+    "lessonCount": 2,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_004",
+        "title": "Myth 1 - Understanding Hair Loss Myths",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "25:30",
+        "completed": false
+      },
+      {
+        "id": "lesson_005",
+        "title": "Myth 2 - Common Hair Care Mistakes",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+        "duration": "30:45",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_003",
+    "title": "Know Your Hair",
+    "description": "Understanding your hair type and structure",
+    "thumbnail": "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop",
+    "lessonCount": 23,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_006",
+        "title": "Understanding Hair Structure",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "35:20",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_004",
+    "title": "Hair Growth Drinks and Recipes",
+    "description": "Nutritious drinks and recipes for healthy hair growth",
+    "thumbnail": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop",
+    "lessonCount": 16,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_007",
+        "title": "Green Smoothie for Hair Growth",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "20:15",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_005",
+    "title": "Doshas Vaat Pitt and Kaf",
+    "description": "Ayurvedic approach to hair care based on doshas",
+    "thumbnail": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&h=600&fit=crop",
+    "lessonCount": 8,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_008",
+        "title": "Understanding Your Dosha Type",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "42:30",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_006",
+    "title": "Homemade Herbal Magical Hair Oil",
+    "description": "Learn to make natural hair oils at home",
+    "thumbnail": "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=800&h=600&fit=crop",
+    "lessonCount": 10,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_009",
+        "title": "Basic Hair Oil Recipe",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "28:45",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_007",
+    "title": "Scalp Massage",
+    "description": "Techniques for effective scalp massage",
+    "thumbnail": "https://images.unsplash.com/photo-1519824145371-296894a0daa9?w=800&h=600&fit=crop",
+    "lessonCount": 6,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_010",
+        "title": "Scalp Massage Basics",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "18:20",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_008",
+    "title": "Weekly Hair Care",
+    "description": "Weekly hair care routine for healthy hair",
+    "thumbnail": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop",
+    "lessonCount": 6,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_011",
+        "title": "Weekly Hair Care Routine",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "32:10",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_009",
+    "title": "15 Days Video Modules for Grey Hair",
+    "description": "Comprehensive guide to managing grey hair naturally",
+    "thumbnail": "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&h=600&fit=crop",
+    "lessonCount": 15,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_012",
+        "title": "Day 1 - Understanding Grey Hair",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "40:25",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_010",
+    "title": "Types of Dandruff and Home Remedies",
+    "description": "Identify and treat different types of dandruff",
+    "thumbnail": "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=800&h=600&fit=crop",
+    "lessonCount": 24,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_013",
+        "title": "Understanding Dandruff Types",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "35:50",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_011",
+    "title": "Bindu Mam's Secret Remedies",
+    "description": "Exclusive remedies from Bindu Mam",
+    "thumbnail": "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&h=600&fit=crop",
+    "lessonCount": 14,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_014",
+        "title": "Secret Remedy 1",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "45:15",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_012",
+    "title": "Homemade Shampoo and Conditioners",
+    "description": "Make natural shampoo and conditioners at home",
+    "thumbnail": "https://images.unsplash.com/photo-1571875257727-256c39da42af?w=800&h=600&fit=crop",
+    "lessonCount": 6,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_015",
+        "title": "Natural Shampoo Recipe",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "22:40",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_013",
+    "title": "Grey Hair and Weekly Hair Care",
+    "description": "Special care routine for grey hair",
+    "thumbnail": "https://images.unsplash.com/photo-1595475207225-428b62bda831?w=800&h=600&fit=crop",
+    "lessonCount": 2,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_016",
+        "title": "Grey Hair Care Routine",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "30:20",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "course_014",
+    "title": "7 Days Practical Implementations Classes",
+    "description": "Practical implementation of all learned techniques",
+    "thumbnail": "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop",
+    "lessonCount": 7,
+    "enrolledDate": "2025-11-02T16:50:00Z",
+    "lessons": [
+      {
+        "id": "lesson_017",
+        "title": "Day 1 - Practical Implementation",
+        "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        "duration": "55:30",
+        "completed": false
+      }
+    ]
+  }
+]
