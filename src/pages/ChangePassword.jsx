@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import authService from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 import { Key, Eye, EyeOff, Home, ChevronRight } from 'lucide-react';
 
@@ -21,7 +22,7 @@ const ChangePassword = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (formData.newPassword !== formData.confirmPassword) {
@@ -34,16 +35,31 @@ const ChangePassword = () => {
       return;
     }
 
-    // Simulate password change
-    setMessage({ type: 'success', text: 'Password changed successfully!' });
-    setTimeout(() => {
-      setFormData({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      });
-      setMessage({ type: '', text: '' });
-    }, 2000);
+    try {
+      // Call live API to change password
+      const response = await authService.changePassword(
+        formData.currentPassword,
+        formData.newPassword,
+        formData.confirmPassword
+      );
+
+      if (response.success) {
+        setMessage({ type: 'success', text: 'Password changed successfully!' });
+        setTimeout(() => {
+          setFormData({
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+          });
+          setMessage({ type: '', text: '' });
+        }, 2000);
+      } else {
+        setMessage({ type: 'error', text: response.error || 'Failed to change password' });
+      }
+    } catch (error) {
+      console.error('Change password error:', error);
+      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+    }
   };
 
   return (

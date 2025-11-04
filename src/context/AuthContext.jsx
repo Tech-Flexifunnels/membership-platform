@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import authService from '../services/authService';
 
 export const AuthContext = createContext();
 
@@ -9,11 +10,11 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check if user is logged in on mount
-    const storedUser = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
+    const isAuth = authService.isAuthenticated();
+    const currentUser = authService.getCurrentUser();
     
-    if (storedUser && token) {
-      setUser(JSON.parse(storedUser));
+    if (isAuth && currentUser) {
+      setUser(currentUser);
       setIsAuthenticated(true);
     }
     
@@ -21,31 +22,26 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (email, password) => {
-    // Mock authentication - in real app, this would call an API
-    if (email === 'javeed@flexifunnels.com' && password === '123456789') {
-      const mockUser = {
-        id: 'user_001',
-        name: 'javeed',
-        email: 'javeed@flexifunnels.com',
-        avatar: null,
-      };
-      
-      setUser(mockUser);
-      setIsAuthenticated(true);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      localStorage.setItem('token', 'mock-jwt-token');
-      
-      return { success: true, user: mockUser };
-    }
+    // Update local state after successful API login
+    const mockUser = {
+      id: 'user_001',
+      name: email.split('@')[0],
+      email: email,
+      avatar: null,
+    };
     
-    return { success: false, error: 'Invalid credentials' };
+    setUser(mockUser);
+    setIsAuthenticated(true);
+    
+    return { success: true, user: mockUser };
   };
 
-  const logout = () => {
+  const logout = async () => {
+    // Call API logout
+    await authService.logout();
+    
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
     localStorage.removeItem('courseProgress');
   };
 

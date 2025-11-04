@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import authService from '../services/authService';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 
@@ -27,14 +28,18 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const result = login(email, password);
+      // Use live API for login
+      const result = await authService.login(email, password);
       
       if (result.success) {
+        // Update auth context
+        login(email, password);
         navigate('/dashboard');
       } else {
         setError(result.error || 'Invalid email or password');
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
