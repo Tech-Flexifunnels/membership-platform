@@ -1,175 +1,193 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useCourses } from '../hooks/useCourses';
-import { useProgress } from '../hooks/useProgress';
-import Layout from '../components/layout/Layout';
-import Card from '../components/common/Card';
-import Badge from '../components/common/Badge';
-import ProgressBar from '../components/course/ProgressBar';
-import { BookOpen, Clock, CheckCircle, PlayCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { BookOpen, Home, ChevronRight } from 'lucide-react';
 
 const MyLearning = () => {
-  const { data: courses, isLoading } = useCourses();
-  const { getProgress } = useProgress();
-  const [filter, setFilter] = useState('all'); // all, in-progress, completed
+  const navigate = useNavigate();
+  const [activeFilter, setActiveFilter] = useState('all');
 
-  const getFilteredCourses = () => {
-    if (!courses) return [];
+  // Mock courses data with progress
+  const mockCourses = [
+    {
+      id: 1,
+      title: 'Yoga & Meditation',
+      thumbnail: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400',
+      lessons: 29,
+      progress: 35,
+      completedLessons: 10,
+    },
+    {
+      id: 2,
+      title: 'Common Myths & Mistakes',
+      thumbnail: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400',
+      lessons: 2,
+      progress: 100,
+      completedLessons: 2,
+    },
+    {
+      id: 3,
+      title: 'Know Your Hair',
+      thumbnail: 'https://images.unsplash.com/photo-1560869713-7d0a29430803?w=400',
+      lessons: 23,
+      progress: 0,
+      completedLessons: 0,
+    },
+  ];
 
-    return courses.filter(course => {
-      const progress = getProgress(course.id);
-      const completionRate = progress.completedCount / course.lessons.length;
+  // Filter courses based on progress
+  const filteredCourses = mockCourses.filter((course) => {
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'in-progress') return course.progress > 0 && course.progress < 100;
+    if (activeFilter === 'completed') return course.progress === 100;
+    return true;
+  });
 
-      if (filter === 'in-progress') {
-        return completionRate > 0 && completionRate < 1;
-      }
-      if (filter === 'completed') {
-        return completionRate === 1;
-      }
-      return true; // all
-    });
-  };
-
-  const filteredCourses = getFilteredCourses();
-
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="flex justify-center items-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        </div>
-      </Layout>
-    );
-  }
+  const filters = [
+    { id: 'all', label: 'All Courses', count: mockCourses.length },
+    {
+      id: 'in-progress',
+      label: 'In Progress',
+      count: mockCourses.filter((c) => c.progress > 0 && c.progress < 100).length,
+    },
+    {
+      id: 'completed',
+      label: 'Completed',
+      count: mockCourses.filter((c) => c.progress === 100).length,
+    },
+  ];
 
   return (
-    <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Learning</h1>
-          <p className="text-gray-600">Track your progress and continue learning</p>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Breadcrumb */}
+        <div className="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center hover:text-primary-500 transition-colors"
+          >
+            <Home className="w-4 h-4 mr-1" />
+            Home
+          </button>
+          <ChevronRight className="w-4 h-4" />
+          <span className="text-gray-900 font-medium">My Learning</span>
+        </div>
+
+        {/* Heading */}
+        <div className="flex items-center space-x-3 mb-8">
+          <BookOpen className="w-6 h-6 text-cyan-500" />
+          <h1 className="text-2xl font-bold text-gray-900">My Learning</h1>
         </div>
 
         {/* Filter Tabs */}
-        <div className="mb-8 border-b border-gray-200">
-          <div className="flex gap-6">
+        <div className="flex flex-wrap gap-3 mb-8">
+          {filters.map((filter) => (
             <button
-              onClick={() => setFilter('all')}
-              className={`pb-4 px-2 font-medium transition-colors ${
-                filter === 'all'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
+              key={filter.id}
+              onClick={() => setActiveFilter(filter.id)}
+              className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                activeFilter === filter.id
+                  ? 'bg-primary-500 text-white shadow-md'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
               }`}
             >
-              All Courses
+              {filter.label}
+              <span
+                className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
+                  activeFilter === filter.id
+                    ? 'bg-white text-primary-500'
+                    : 'bg-gray-100 text-gray-600'
+                }`}
+              >
+                {filter.count}
+              </span>
             </button>
-            <button
-              onClick={() => setFilter('in-progress')}
-              className={`pb-4 px-2 font-medium transition-colors ${
-                filter === 'in-progress'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              In Progress
-            </button>
-            <button
-              onClick={() => setFilter('completed')}
-              className={`pb-4 px-2 font-medium transition-colors ${
-                filter === 'completed'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              Completed
-            </button>
-          </div>
+          ))}
         </div>
 
-        {/* Courses Grid */}
-        {filteredCourses.length === 0 ? (
-          <div className="text-center py-12">
-            <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No courses found
-            </h3>
-            <p className="text-gray-500">
-              {filter === 'completed'
-                ? "You haven't completed any courses yet"
-                : filter === 'in-progress'
-                ? "You haven't started any courses yet"
-                : 'No courses available'}
-            </p>
+        {/* Course Grid */}
+        {filteredCourses.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredCourses.map((course) => (
+              <div key={course.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="relative">
+                  <img
+                    src={course.thumbnail}
+                    alt={course.title}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="absolute top-3 right-3">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        course.progress === 100
+                          ? 'bg-green-500 text-white'
+                          : course.progress > 0
+                          ? 'bg-yellow-500 text-white'
+                          : 'bg-gray-500 text-white'
+                      }`}
+                    >
+                      {course.progress === 100
+                        ? 'Completed'
+                        : course.progress > 0
+                        ? 'In Progress'
+                        : 'Not Started'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                    {course.title}
+                  </h3>
+
+                  <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                    <span className="flex items-center">
+                      <BookOpen className="w-4 h-4 mr-1" />
+                      {course.completedLessons}/{course.lessons} Lessons
+                    </span>
+                    <span className="font-medium text-primary-500">{course.progress}%</span>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="mb-4">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-primary-500 h-2 rounded-full transition-all"
+                        style={{ width: `${course.progress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => navigate(`/course/${course.id}`)}
+                    className="w-full bg-primary-500 hover:bg-primary-600 text-white py-2 rounded-lg font-medium transition-colors"
+                  >
+                    {course.progress === 100 ? 'Review Course' : 'Continue Learning'}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCourses.map((course) => {
-              const progress = getProgress(course.id);
-              const completionRate = (progress.completedCount / course.lessons.length) * 100;
-              const isCompleted = completionRate === 100;
-
-              return (
-                <Card key={course.id} className="hover:shadow-lg transition-shadow">
-                  <Link to={`/course/${course.id}`}>
-                    {/* Course Image */}
-                    <div className="relative h-48 bg-gradient-to-br from-purple-400 to-blue-500 rounded-t-lg overflow-hidden">
-                      {course.thumbnail ? (
-                        <img
-                          src={course.thumbnail}
-                          alt={course.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full">
-                          <BookOpen className="w-16 h-16 text-white opacity-50" />
-                        </div>
-                      )}
-                      {isCompleted && (
-                        <div className="absolute top-4 right-4 bg-green-500 text-white rounded-full p-2">
-                          <CheckCircle className="w-6 h-6" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Course Info */}
-                    <div className="p-6">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 line-clamp-2">
-                        {course.title}
-                      </h3>
-
-                      {/* Progress Bar */}
-                      <div className="mb-4">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm text-gray-600">Progress</span>
-                          <span className="text-sm font-medium text-blue-600">
-                            {Math.round(completionRate)}%
-                          </span>
-                        </div>
-                        <ProgressBar progress={completionRate} />
-                      </div>
-
-                      {/* Stats */}
-                      <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
-                        <div className="flex items-center gap-1">
-                          <PlayCircle className="w-4 h-4" />
-                          <span>{progress.completedCount} / {course.lessons.length} lessons</span>
-                        </div>
-                      </div>
-
-                      {/* Continue Button */}
-                      <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                        {isCompleted ? 'Review Course' : 'Continue Learning'}
-                      </button>
-                    </div>
-                  </Link>
-                </Card>
-              );
-            })}
+          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+            <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Courses Found</h3>
+            <p className="text-gray-600 mb-6">
+              {activeFilter === 'all'
+                ? "You haven't enrolled in any courses yet."
+                : activeFilter === 'in-progress'
+                ? "You don't have any courses in progress."
+                : "You haven't completed any courses yet."}
+            </p>
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            >
+              Browse Courses
+            </button>
           </div>
         )}
       </div>
-    </Layout>
+    </div>
   );
 };
 
