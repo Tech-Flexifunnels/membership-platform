@@ -1,11 +1,11 @@
 import React from 'react';
-import { useCourses } from '../hooks/useCourses';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthProvider';
+import { useCourse } from '../context/CourseProvider';
 import CourseGrid from '../components/course/CourseGrid';
 import Loader from '../components/common/Loader';
 
 const Dashboard = () => {
-  const { data: courses, isLoading, error } = useCourses();
+  const { courses, loading: isLoading, error } = useCourse();
   const { user } = useAuth();
 
   if (isLoading) {

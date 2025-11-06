@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home, ChevronRight } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthProvider';
 import ProfileCard from '../components/profile/ProfileCard';
 import Button from '../components/common/Button';
 import Badge from '../components/common/Badge';

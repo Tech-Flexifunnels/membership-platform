@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Home, ChevronRight } from 'lucide-react';
-import { useCourse } from '../hooks/useCourses';
-import { useProgress } from '../hooks/useProgress';
+import { useCourse } from '../context/CourseProvider';
+import { useLesson } from '../context/LessonProvider';
 import VideoPlayer from '../components/course/VideoPlayer';
 import LessonList from '../components/course/LessonList';
 import Button from '../components/common/Button';
@@ -11,8 +11,8 @@ import Loader from '../components/common/Loader';
 
 const CourseDetail = () => {
   const { courseId } = useParams();
-  const { data: course, isLoading, error } = useCourse(courseId);
-  const { markLessonComplete, isLessonComplete, getCompletedCount } = useProgress();
+  const { currentCourse: course, loading: isLoading, error, fetchCourseById } = useCourse();
+  const { markLessonComplete, isLessonCompleted, completedLessons } = useLesson();
   const [currentLesson, setCurrentLesson] = useState(null);
   const [activeTab, setActiveTab] = useState('about');
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Home, User, Key, Gift, Ticket, LogOut, ChevronDown, BookOpen } from 'lucide-react';
 import { Menu, Transition } from '@headlessui/react';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../context/AuthProvider';
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');

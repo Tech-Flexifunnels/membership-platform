@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import authService from '../services/authService';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthProvider';
 import { Key, Eye, EyeOff, Home, ChevronRight } from 'lucide-react';
 
 const ChangePassword = () => {
