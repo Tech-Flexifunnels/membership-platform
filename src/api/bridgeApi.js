@@ -52,6 +52,16 @@ export const autoLogin = async (payload) => {
   }
 };
 
+export const Login = async (payload) => {
+  try {
+    const response = await bridgeApi.post(API_CONFIG.ENDPOINTS.LOGIN, payload);
+    return response.data;
+  } catch (error) {
+    console.error('Auto login error:', error);
+    throw error;
+  }
+};
+
 /**
  * Get device login data
  * @param {Object} payload - Device information
@@ -90,6 +100,16 @@ export const getInviteLogin = async (payload) => {
 export const getFunnel = async (payload) => {
   try {
     const response = await bridgeApi.post(API_CONFIG.ENDPOINTS.GET_FUNNEL, payload);
+    return response.data;
+  } catch (error) {
+    console.error('Get funnel error:', error);
+    throw error;
+  }
+};
+
+export const getcustomscript = async (payload) => {
+  try {
+    const response = await bridgeApi.post(API_CONFIG.ENDPOINTS.CUSTOM_SCRIPT, payload);
     return response.data;
   } catch (error) {
     console.error('Get funnel error:', error);

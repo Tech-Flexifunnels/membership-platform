@@ -2,6 +2,8 @@
 export const API_CONFIG = {
   BASE_URL: 'https://bridge.flexifunnels.com',
   ENDPOINTS: {
+    LOGIN: '/api/login',
+    CUSTOM_SCRIPT: 'api/customscript',
     AUTO_LOGIN: '/api/autologin',
     GET_DEVICE_LOGIN_DATA: '/api/get-device-login-data',
     GET_INVITE_LOGIN: '/api/getinvitelogin',

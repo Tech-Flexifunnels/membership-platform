@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { autoLogin } from '../api/bridgeApi';
+import React, { createContext, useState, useEffect, useContext } from "react";
+import { Login } from "../api/bridgeApi";
 
 // Create Auth Context
 export const AuthContext = createContext();
@@ -8,7 +8,7 @@ export const AuthContext = createContext();
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 };
@@ -17,13 +17,16 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [funnelData, setFunnelData] = useState(null);
+  const [brandSettings, setBrandSettings] = useState(null);
+  const [membershipUser, setMembershipUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Check for existing token on mount
   useEffect(() => {
-    const storedToken = localStorage.getItem('auth_token');
-    const storedUser = localStorage.getItem('user');
+    const storedToken = localStorage.getItem("auth_token");
+    const storedUser = localStorage.getItem("user");
 
     if (storedToken && storedUser) {
       setToken(storedToken);
@@ -36,36 +39,28 @@ export const AuthProvider = ({ children }) => {
   // Login function
   const login = async (credentials) => {
     try {
-      const response = await autoLogin(credentials);
-      
-      if (response.success && response.token) {
-        const { token, user } = response;
-        
-        // Store token and user data
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        
-        setToken(token);
-        setUser(user);
+      const response = await Login(credentials);
+      if (response.success === 200) {
+        localStorage.setItem("auth_token", response?.access_token);
+        setMembershipUser(response);
         setIsAuthenticated(true);
-        
-        return { success: true, data: response };
+        return response;
       }
-      
-      return { success: false, error: response.message || 'Login failed' };
+
+      return { success: false, error: response.message || "Login failed" };
     } catch (error) {
-      console.error('Login error:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Login failed' 
+      console.error("Login error:", error);
+      return {
+        success: false,
+        error: error.response?.data?.message || "Login failed",
       };
     }
   };
 
   // Logout function
   const logout = () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("user");
     setToken(null);
     setUser(null);
     setIsAuthenticated(false);
@@ -74,7 +69,7 @@ export const AuthProvider = ({ children }) => {
   // Update user data
   const updateUser = (userData) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const value = {
@@ -82,6 +77,11 @@ export const AuthProvider = ({ children }) => {
     token,
     isAuthenticated,
     loading,
+    funnelData,
+    setFunnelData,
+    brandSettings,
+    setBrandSettings,
+    membershipUser,
     login,
     logout,
     updateUser,

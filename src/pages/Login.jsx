@@ -1,122 +1,157 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { useAuth } from '../context/AuthProvider';
-import { getFunnel } from '../api/bridgeApi';
-import { getMetaContent, setMetaContent, loadScript } from '../api/config';
-import Input from '../components/common/Input';
-import Button from '../components/common/Button';
-import Loader from '../components/common/Loader';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { useAuth } from "../context/AuthProvider";
+import { getFunnel, getcustomscript } from "../api/bridgeApi";
+import { getMetaContent } from "../api/config";
+import Loader from "../components/common/Loader";
+import styled from "styled-components";
+import { toast } from "react-toastify";
+
+const LoginButton = styled.button`
+  width: 100%;
+  color: white;
+  padding: 1rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  background-color: ${(props) => props.bgColor || "#054982"};
+  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+
+  &:hover {
+    opacity: 0.9;
+    background-color: ${(props) => props.hoverColor || "#0369a1"};
+  }
+`;
+
+const ForgotPasswordLink = styled.a`
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600; /* font-semibold */
+  text-align: center;
+  transition: all 0.3s ease;
+  color: ${(props) => props.$color1 || "#054982"};
+
+  &:hover {
+    color: ${(props) => props.$color2 || "#0369a1"};
+  }
+`;
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [focus, setFocus] = useState({ email: false, password: false });
   const [loading, setLoading] = useState(false);
   const [funnelLoading, setFunnelLoading] = useState(true);
-  const [funnelData, setFunnelData] = useState(null);
-  const [pageTitle, setPageTitle] = useState('Login');
-  
-  const { login, isAuthenticated } = useAuth();
+  const [pageTitle, setPageTitle] = useState("Login");
+
+  const {
+    login,
+    isAuthenticated,
+    funnelData,
+    setFunnelData,
+    brandSettings,
+    setBrandSettings,
+  } = useAuth();
+
   const navigate = useNavigate();
   const { slug } = useParams();
 
-  // Load funnel configuration on mount
   useEffect(() => {
-    const loadFunnelConfig = async () => {
+    const loadFunnelDataSequentially = async () => {
       try {
-        // Get funnel_id from meta tag
-        const funnelId = getMetaContent('funnel_id');
-        
+        const funnelId = getMetaContent("funnel_id");
+
         if (!funnelId) {
-          console.warn('No funnel_id found in meta tag, using default configuration');
+          console.warn("No funnel_id found in meta tag");
           setFunnelLoading(false);
           return;
         }
 
-        // Call getFunnel API
         const response = await getFunnel({ funnel_id: funnelId });
-        
+
         if (response.success) {
-          setFunnelData(response.data);
-          
-          // Update page title
-          if (response.data.funnel_name) {
-            setPageTitle(`${response.data.funnel_name} - Login`);
-          }
-          
-          // Update meta tags
-          if (response.data.category_id) {
-            setMetaContent('category_id', response.data.category_id);
-          }
-          
-          // Load custom scripts if provided
-          if (response.data.custom_scripts) {
-            const scripts = Array.isArray(response.data.custom_scripts) 
-              ? response.data.custom_scripts 
-              : [response.data.custom_scripts];
-            
-            for (const script of scripts) {
-              if (script.type === 'inline') {
-                await loadScript(script.content, true);
-              } else if (script.type === 'external' && script.src) {
-                await loadScript(script.src, false);
-              }
-            }
-          }
+          setFunnelData(response);
+          const brand = JSON.parse(
+            response?.funnel_data?.[0]?.brand_settings || "{}"
+          );
+          setBrandSettings(brand);
+          setPageTitle(response?.page_title || "Login");
+
+          await loadCustomScript(response?.funnel_data?.[0]?.funnel_id);
         }
       } catch (err) {
-        console.error('Failed to load funnel configuration:', err);
+        console.error("Failed to load funnel configuration:", err);
       } finally {
         setFunnelLoading(false);
       }
     };
 
-    loadFunnelConfig();
+    const loadCustomScript = async (funnelId) => {
+      try {
+        const res = await getcustomscript({ funnel_id: funnelId });
+        // console.log("Custom Script Loaded:", res);
+      } catch (err) {
+        console.error("Failed to load custom script:", err);
+      }
+    };
+
+    loadFunnelDataSequentially();
   }, [slug]);
 
-  // Redirect if already authenticated
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    }
+    if (isAuthenticated) navigate("/dashboard");
   }, [isAuthenticated, navigate]);
-
-  // Validate slug
-  useEffect(() => {
-    // List of valid slugs (can be fetched from API in production)
-    const validSlugs = ['batch-50', 'default', 'demo'];
-    
-    if (slug && !validSlugs.includes(slug)) {
-      // Invalid slug, redirect to home
-      navigate('/');
-    }
-  }, [slug, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
 
     try {
-      const result = await login({ email, password });
-      
-      if (result.success) {
-        navigate('/dashboard');
+      const funnelId = funnelData?.funnel_data?.[0]?.funnel_id;
+      const deviceName = navigator.userAgent || "web";
+
+      if (!email) {
+        toast.warning("Please enter your email.");
+        return;
+      }
+
+      if (!password) {
+        toast.warning("Please enter your password.");
+        return;
+      }
+
+      if (!funnelId) {
+        toast.warning("Funnel ID missing. Please refresh and try again.");
+        return;
+      }
+
+      const result = await login({
+        email,
+        password,
+        funnel_id: funnelId,
+        device_name: deviceName,
+      });
+
+      if (result?.success) {
+        toast.success("Login successful!");
+        navigate("/dashboard");
       } else {
-        setError(result.error || 'Invalid email or password');
+        toast.error(result?.error || "Invalid email or password.");
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError('An error occurred. Please try again.');
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Show loader while funnel is loading
   if (funnelLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-blue-500 to-pink-400">
@@ -125,121 +160,148 @@ const Login = () => {
     );
   }
 
+  const labelColor = (field, value) =>
+    focus[field] || value
+      ? brandSettings.theme_color2
+      : brandSettings.theme_color1;
+
+  const labelStyle = (field, value) => ({
+    color: labelColor(field, value),
+    transform: focus[field] || value ? "scale(0.8)" : "scale(1)",
+    top: focus[field] || value ? "2px" : "20px",
+  });
+
   return (
     <>
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        {funnelData?.category_id && (
-          <meta name="category_id" content={funnelData.category_id} />
-        )}
       </Helmet>
 
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-blue-500 to-pink-400 p-4">
-        {/* Background Image Overlay */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-20"
+      <div className="min-h-screen flex items-center justify-center p-4 relative">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: funnelData?.background_image || 'url(https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?w=1920&h=1080&fit=crop)',
+            backgroundImage:
+              funnelData?.bgimg ||
+              "url(https://membershipdata.flexifunnels.com/images/login_bg_default.png)",
           }}
         />
-        
-        {/* Login Card */}
+        <div
+          className="absolute inset-0 "
+          style={{
+            backgroundColor:
+              brandSettings?.overlaycolor || "rgba(1,176,208,0.7)",
+          }}
+        />
+
         <div className="relative w-full max-w-md">
-          <div className="bg-white rounded-2xl shadow-2xl p-8">
-            {/* Logo */}
+          <div className="bg-white rounded-2xl shadow-2xl py-14 px-12">
             <div className="flex justify-center mb-6">
-              <div className="bg-white border-2 border-green-400 rounded-lg px-8 py-3">
-                {funnelData?.logo ? (
-                  <img src={funnelData.logo} alt="Logo" className="h-10" />
-                ) : (
-                  <span className="text-3xl font-bold text-primary-500" style={{ fontFamily: 'cursive' }}>
-                    {funnelData?.funnel_name || 'Logo'}
-                  </span>
-                )}
-              </div>
+              {brandSettings?.logo ? (
+                <img src={brandSettings.logo} alt="Logo" className="h-12" />
+              ) : (
+                <span
+                  className="text-3xl font-bold"
+                  style={{ color: brandSettings.theme_color2 }}
+                >
+                  Logo
+                </span>
+              )}
             </div>
 
-            {/* Heading */}
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {funnelData?.heading || 'Login with'}
-              </h2>
-              <p className="text-2xl font-bold text-gray-900">
-                {funnelData?.subheading || 'your account now'}
-              </p>
-            </div>
+            <h2 className="text-center text-xl font-bold text-gray-800 mb-8">
+              Login with <br /> your account now
+            </h2>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Input */}
               <div className="relative">
-                <Input
+                <Mail
+                  className="absolute right-3 top-6"
+                  color={brandSettings.theme_color2}
+                  size={22}
+                />
+                <input
                   type="email"
-                  placeholder="Enter Your Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="border-2 border-blue-300 focus:border-blue-500"
-                  rightIcon={<Mail className="w-5 h-5 text-blue-500" />}
+                  onFocus={() => setFocus((p) => ({ ...p, email: true }))}
+                  onBlur={() => setFocus((p) => ({ ...p, email: false }))}
+                  className="w-full border border-[#d0d0d0] rounded-[7px] shadow-[inset_0_3px_6px_#00000029] text-base  bg-transparent h-16 px-6 outline-none text-gray-900 transition-all duration-300"
+                  style={{
+                    borderColor: focus.email
+                      ? brandSettings.theme_color2
+                      : brandSettings.theme_color1,
+                  }}
                 />
+                <label
+                  className="absolute left-3 text-base transition-all duration-300 pointer-events-none"
+                  style={labelStyle("email", email)}
+                >
+                  Enter Your Email
+                </label>
               </div>
 
               {/* Password Input */}
               <div className="relative">
-                <Input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter Your Password"
+                <Lock
+                  className="absolute right-10 top-6"
+                  color={brandSettings.theme_color2}
+                  size={22}
+                />
+                <input
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="border-2 border-pink-300 focus:border-pink-500"
-                  rightIcon={
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="text-pink-500 hover:text-pink-600"
-                    >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                  }
+                  onFocus={() => setFocus((p) => ({ ...p, password: true }))}
+                  onBlur={() => setFocus((p) => ({ ...p, password: false }))}
+                  className="w-full border border-[#d0d0d0] rounded-[7px] shadow-[inset_0_3px_6px_#00000029] text-base  bg-transparent h-16 px-6 outline-none text-gray-900 transition-all duration-300"
+                  style={{
+                    borderColor: focus.password
+                      ? brandSettings.theme_color2
+                      : brandSettings.theme_color1,
+                  }}
                 />
+                <label
+                  className="absolute left-3 text-base transition-all duration-300 pointer-events-none"
+                  style={labelStyle("password", password)}
+                >
+                  Enter Your Password
+                </label>
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((p) => !p)}
+                  className="absolute right-2 top-6"
+                >
+                  {showPassword ? (
+                    <Eye color={brandSettings.theme_color2} size={22} />
+                  ) : (
+                    <EyeOff color={brandSettings.theme_color2} size={22} />
+                  )}
+                </button>
               </div>
 
-              {/* Error Message */}
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                  {error}
-                </div>
-              )}
-
-              {/* Forgot Password */}
               <div className="text-center">
-                <a href="#" className="text-pink-500 hover:text-pink-600 text-sm font-medium">
+                <ForgotPasswordLink
+                  href="#"
+                  $color1={brandSettings?.theme_color1}
+                  $color2={brandSettings?.theme_color2}
+                >
                   Forgot Password?
-                </a>
+                </ForgotPasswordLink>
               </div>
 
-              {/* Login Button */}
-              <Button
+              <LoginButton
                 type="submit"
-                variant="primary"
-                className="w-full"
-                loading={loading}
                 disabled={loading}
+                bgColor={brandSettings?.theme_color1}
+                hoverColor={brandSettings?.theme_color2}
               >
-                Login
-              </Button>
+                {loading ? "Loading..." : "Login"}
+              </LoginButton>
             </form>
-
-            {/* Demo Credentials */}
-            {process.env.NODE_ENV === 'development' && (
-              <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                <p className="text-xs text-gray-600 text-center mb-2">Demo Credentials:</p>
-                <p className="text-xs text-gray-700 text-center">Email: javeed@flexifunnels.com</p>
-                <p className="text-xs text-gray-700 text-center">Password: 123456789</p>
-              </div>
-            )}
           </div>
         </div>
       </div>
