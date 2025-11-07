@@ -40,14 +40,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await Login(credentials);
-      if (response.success === 200) {
-        localStorage.setItem("auth_token", response?.access_token);
-        setMembershipUser(response);
-        setIsAuthenticated(true);
-        return response;
-      }
-
-      return { success: false, error: response.message || "Login failed" };
+      return response;
     } catch (error) {
       console.error("Login error:", error);
       return {

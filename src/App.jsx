@@ -51,6 +51,10 @@ function App() {
               <meta name="category_id" content="17" />
               <meta name="keywords" content="" />
               <meta name="author" content="" />
+              {/* 0xq22mj7 */}
+              {/* <meta name="funnel_id" content={"lVdK0xq22Mj7g9Rm"} />
+              <meta name="funnel_page_id" content={"1BwmZx9P4BVrNkbR"} /> */}
+              {/* 9xxwx1rx */}
               <meta name="funnel_id" content={"kBDp9xXWX1rXoyK5"} />
               <meta name="funnel_page_id" content="MyYRpx09299j8Vq4" />
             </Helmet>
@@ -65,7 +69,7 @@ function App() {
               {/* Protected Routes with Layout */}
               <Route element={<Layout />}>
                 <Route
-                  path="/dashboard"
+                  path="/membership/:slug/dashboard"
                   element={
                     <ProtectedRoute>
                       <Dashboard />
